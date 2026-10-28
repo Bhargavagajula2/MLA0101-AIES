@@ -1,0 +1,46 @@
+
+import heapq
+
+def ucs(graph, start, goal):
+    priority_queue = [(0, start, [start])]
+    visited = set()
+
+    while priority_queue:
+        cost, node, path = heapq.heappop(priority_queue)
+
+        if node == goal:
+            return path, cost
+
+        if node not in visited:
+            visited.add(node)
+
+            for neighbor, weight in graph[node]:
+                if neighbor not in visited:
+                    heapq.heappush(
+                        priority_queue,
+                        (cost + weight, neighbor, path + [neighbor])
+                    )
+
+    return None, float("inf")
+
+
+# Logistics transportation network
+graph = {
+    'A': [('B', 4), ('C', 2)],
+    'B': [('D', 5), ('E', 3)],
+    'C': [('B', 1), ('D', 8)],
+    'D': [('E', 2), ('F', 6)],
+    'E': [('F', 2)],
+    'F': []
+}
+
+start = 'A'
+goal = 'F'
+
+path, cost = ucs(graph, start, goal)
+
+if path:
+    print("Least-cost path:", " -> ".join(path))
+    print("Minimum transportation cost:", cost)
+else:
+    print("No path found")
