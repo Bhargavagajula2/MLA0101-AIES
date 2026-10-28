@@ -1,0 +1,57 @@
+
+import heapq
+
+def best_first_search(graph, heuristic, start, goal):
+    priority_queue = [(heuristic[start], start, [start])]
+    visited = set()
+
+    while priority_queue:
+        h, city, path = heapq.heappop(priority_queue)
+
+        if city == goal:
+            return path
+
+        if city not in visited:
+            visited.add(city)
+
+            for neighbor in graph[city]:
+                if neighbor not in visited:
+                    heapq.heappush(
+                        priority_queue,
+                        (heuristic[neighbor], neighbor, path + [neighbor])
+                    )
+
+    return None
+
+
+# Cities connected by roads
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['G'],
+    'F': ['G'],
+    'G': []
+}
+
+# Estimated distance from each city to destination G
+heuristic = {
+    'A': 7,
+    'B': 6,
+    'C': 4,
+    'D': 5,
+    'E': 2,
+    'F': 1,
+    'G': 0
+}
+
+start = 'A'
+goal = 'G'
+
+path = best_first_search(graph, heuristic, start, goal)
+
+if path:
+    print("Path found:", " -> ".join(path))
+else:
+    print("No path found")
