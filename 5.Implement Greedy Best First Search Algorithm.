@@ -1,0 +1,59 @@
+
+import heapq
+
+def greedy_best_first_search(graph, heuristic, start, goal):
+    queue = [(heuristic[start], start)]
+    visited = set()
+    parent = {start: None}
+
+    while queue:
+        h, node = heapq.heappop(queue)
+
+        if node in visited:
+            continue
+
+        visited.add(node)
+
+        if node == goal:
+            path = []
+            while node is not None:
+                path.append(node)
+                node = parent[node]
+            return path[::-1]
+
+        for neighbor in graph[node]:
+            if neighbor not in visited and neighbor not in parent:
+                parent[neighbor] = node
+                heapq.heappush(queue, (heuristic[neighbor], neighbor))
+
+    return None
+
+
+# Warehouse storage racks
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['G'],
+    'F': ['G'],
+    'G': []
+}
+
+# Estimated distance to the goal rack G
+heuristic = {
+    'A': 7,
+    'B': 6,
+    'C': 4,
+    'D': 5,
+    'E': 2,
+    'F': 1,
+    'G': 0
+}
+
+path = greedy_best_first_search(graph, heuristic, 'A', 'G')
+
+if path:
+    print("Path found:", " -> ".join(path))
+else:
+    print("No path found")
