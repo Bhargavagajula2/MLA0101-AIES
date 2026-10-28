@@ -1,0 +1,60 @@
+
+import heapq
+
+def astar(graph, heuristic, start, goal):
+    queue = [(heuristic[start], 0, start, [start])]
+    visited = set()
+
+    while queue:
+        f, cost, node, path = heapq.heappop(queue)
+
+        if node == goal:
+            return path, cost
+
+        if node in visited:
+            continue
+
+        visited.add(node)
+
+        for neighbor, weight in graph[node]:
+            if neighbor not in visited:
+                new_cost = cost + weight
+                f_score = new_cost + heuristic[neighbor]
+
+                heapq.heappush(
+                    queue,
+                    (f_score, new_cost, neighbor, path + [neighbor])
+                )
+
+    return None, float("inf")
+
+
+# Delivery route with travel costs
+graph = {
+    'A': [('B', 2), ('C', 4)],
+    'B': [('D', 3), ('E', 5)],
+    'C': [('F', 2)],
+    'D': [('G', 5)],
+    'E': [('G', 2)],
+    'F': [('G', 3)],
+    'G': []
+}
+
+# Estimated remaining distance to destination G
+heuristic = {
+    'A': 7,
+    'B': 6,
+    'C': 4,
+    'D': 5,
+    'E': 2,
+    'F': 3,
+    'G': 0
+}
+
+path, cost = astar(graph, heuristic, 'A', 'G')
+
+if path:
+    print("Optimal path:", " -> ".join(path))
+    print("Total travel cost:", cost)
+else:
+    print("No path found")
