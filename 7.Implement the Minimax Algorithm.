@@ -1,0 +1,43 @@
+
+def minimax(tree, node, depth, maximizing):
+    if depth == 0 or node not in tree:
+        return tree.get(node, node)
+
+    if maximizing:
+        best = float('-inf')
+        for child in tree[node]:
+            value = minimax(tree, child, depth - 1, False)
+            best = max(best, value)
+        return best
+    else:
+        best = float('inf')
+        for child in tree[node]:
+            value = minimax(tree, child, depth - 1, True)
+            best = min(best, value)
+        return best
+
+
+# Possible moves and their evaluation scores
+tree = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F', 'G'],
+    'D': 3,
+    'E': 5,
+    'F': 2,
+    'G': 9
+}
+
+best_score = float('-inf')
+best_move = None
+
+for move in tree['A']:
+    score = minimax(tree, move, 2, False)
+    print("Move", move, "Score:", score)
+
+    if score > best_score:
+        best_score = score
+        best_move = move
+
+print("Best move:", best_move)
+print("Best score:", best_score)
